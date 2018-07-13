@@ -1,0 +1,26 @@
+{:duct.core/project-ns orgpad
+ :duct.core/environment :production
+
+ :duct.module/logging {}
+ :duct.module/web {}
+ :duct.server.http/aleph {}
+
+ :duct.router/cascading
+ [#ig/ref :orgpad.handler/com]
+
+ :orgpad.handler/com {}
+ 
+ :orgpad.module/ignite {}
+
+ :orgpad.module/onyx {}
+
+ :orgpad.onyx.manager/jobs [#ig/ref :orgpad.jobs/base]
+ :orgpad.jobs/base {:workflow #ig/ref :orgpad.workflows/base
+                    :catalog #ig/ref :orgpad.catalogs/base
+                    :lifecycles #ig/ref :orgpad.lifecycles/base}
+ :orgpad.workflows/base {}
+ :orgpad.catalogs/base {:batch-size 5
+                        :batch-timeout 1
+                        :caches #ig/ref :orgpad.ignite.manager/caches}
+ :orgpad.lifecycles/base {}
+ }

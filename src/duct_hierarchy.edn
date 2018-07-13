@@ -1,0 +1,2 @@
+{:orgpad.module/ignite [:duct/module]
+ :orgpad.module/onyx [:duct/module]}
