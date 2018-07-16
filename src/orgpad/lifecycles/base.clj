@@ -6,8 +6,11 @@
 
 (defn inject-do-cmd-state
   [{:keys [onyx.core/task-map onyx.core/fn-params] :as pipeline} lifecycle]
-  (let [params (:orgpad.server/params task-map)]
-    {:onyx.core/params [params]}))
+  (let [;; params (:orgpad.server/params task-map)
+        params (:orgpad.server/ignite-caches lifecycle)]
+    {:onyx.core/params [{:caches-keys
+                         params}]}))
+
 
 (defn inject-in-ch
   [event lifecycle]
@@ -28,7 +31,7 @@
   {:lifecycle/before-task-start inject-do-cmd-state})
 
 (defmethod ig/init-key :orgpad.lifecycles/base
-  [_ {:keys [channel-name channel-size]}]
+  [_ {:keys [channel-name channel-size caches]}]
   (let [channel-name (or channel-name :default)]
     [{:lifecycle/task :in
       :core.async/id channel-name
@@ -44,5 +47,5 @@
      {:lifecycle/task :out
       :lifecycle/calls :onyx.plugin.core-async/writer-calls}
      {:lifecycle/task :do-cmd
-      :lifecycle/calls ::do-cmd-calls}]))
-
+      :lifecycle/calls ::do-cmd-calls
+      :orgpad.server/ignite-caches (keys caches)}]))

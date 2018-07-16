@@ -20,7 +20,6 @@
                     :lifecycles #ig/ref :orgpad.lifecycles/base}
  :orgpad.workflows/base {}
  :orgpad.catalogs/base {:batch-size 5
-                        :batch-timeout 1
-                        :caches #ig/ref :orgpad.ignite.manager/caches}
- :orgpad.lifecycles/base {}
+                        :batch-timeout 1}
+ :orgpad.lifecycles/base {:caches #ig/ref :orgpad.ignite.manager/caches}
  }

@@ -46,3 +46,7 @@
 (defmethod ig/init-key ::caches
   [_ caches]
   (into {} (map (juxt :name :cache)) caches))
+
+(defn get-cache
+  [key]
+  (get @caches key))

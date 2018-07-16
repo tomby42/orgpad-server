@@ -122,14 +122,14 @@
            (go-loop []
              (let [cmd (<! gates/default-output-buffer)]
                (when cmd
-                 (case (:replay cmd)
+                 (case (:reply cmd)
                    :orgpad.server.reply/all
                    (doseq [uid (-> @sente-server :connected-uids deref :any)]
                      (chsk-send! uid [:orgpad.server/response cmd]))
-                   :orgpad.server.replay/orgpad-all
+                   :orgpad.server.reply/orgpad-all
                    (doseq [uid (get @orgpads->connections (get-in cmd [:params :orgpad.server/uuid]))]
                      (chsk-send! uid [:orgpad.server/response cmd]))
-                   :orgpad.server.replay/sender
+                   :orgpad.server.reply/sender
                    (chsk-send! (:sender cmd) [:orgpad.server/response cmd])
                    nil)
                  (recur)))))))
