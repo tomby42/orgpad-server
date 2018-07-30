@@ -36,6 +36,9 @@
                  [datascript "0.16.6"]
                  [com.taoensso/sente "1.12.0"]
                  [com.cognitect/transit-clj "0.8.309"]
+                 [datascript-transit "0.2.2"
+                  :exclusions [com.cognitect/transit-clj
+                               com.cognitect/transit-cljs]]
                  ]
 
   :repositories [["ignite.extra" "http://www.gridgainsystems.com/nexus/content/repositories/external"]]

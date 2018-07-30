@@ -94,10 +94,11 @@
   [{:as ev-msg :keys [event uid ?data ring-req ?reply-fn send-fn]}]
   (case (:action ?data)
     :orgpad.server/connect-to-orgpad
-    (update orgpads->connections (get-in ?data [:params :orgpad.server/uuid]) conjn uid)
+    (update @orgpads->connections (get-in ?data [:params :orgpad.server/uuid]) conjn uid)
     :orgpad.server/disconnect-from-orgpad
-    (update orgpads->connections (get-in ?data [:params :orgpad.server/uuid]) disj uid)
+    (update @orgpads->connections (get-in ?data [:params :orgpad.server/uuid]) disj uid)
     nil)
+
 
   (put! gates/default-input-channel (assoc ?data :sender uid)))
 
