@@ -32,3 +32,17 @@
   (-> gdb
       (d/with (seq ldb))
       :db-after))
+
+(defn split-global-local-update
+  [ldb update-stream]
+  (let [update-db (-> (d/empty-db {}) (d/with update-stream) :db-after)
+        local-ids (d/q '[:find ?v
+                         :in $
+                         :where
+                         [?v :orgpad/type :orgpad/unit-view]] update-db)]
+    (reduce (fn [[lupdate gupdate] datom]
+              (if (or (d/entity ldb (.-e datom))
+                      (contains? local-ids (.-e datom)))
+                [(conj lupdate datom) gupdate]
+                [lupdate (conj gupdate datom)]))
+            [[] []] update-stream)))

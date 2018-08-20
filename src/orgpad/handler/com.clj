@@ -41,6 +41,7 @@
     (add-watch connected-uids :connected-uids
                (fn [_ _ old new]
                  (when (not= old new)
+                   ;; TODO: when connections drops clean out orgpads->connections
                    (infof "Connected uids change: %s" new))))
     chsk-server))
 
@@ -99,7 +100,6 @@
     (update @orgpads->connections (get-in ?data [:params :orgpad.server/uuid]) disj uid)
     nil)
 
-
   (put! gates/default-input-channel (assoc ?data :sender uid)))
 
 ;;;; Sente event router (our `event-msg-handler` loop)
@@ -122,14 +122,19 @@
     (swap! sente-server assoc :orgpad.server/repeater
            (go-loop []
              (let [cmd (<! gates/default-output-buffer)]
+               (println "*************************")
+               (println "Result cmd: " cmd)
+               (println "*************************")
                (when cmd
                  (case (:reply cmd)
                    :orgpad.server.reply/all
                    (doseq [uid (-> @sente-server :connected-uids deref :any)]
-                     (chsk-send! uid [:orgpad.server/response cmd]))
+                     (when (->> uid contains? (:exclude cmd) not)
+                       (chsk-send! uid [:orgpad.server/response cmd])))
                    :orgpad.server.reply/orgpad-all
                    (doseq [uid (get @orgpads->connections (get-in cmd [:params :orgpad.server/uuid]))]
-                     (chsk-send! uid [:orgpad.server/response cmd]))
+                     (when (->> uid (contains? (:exclude cmd)) not)
+                       (chsk-send! uid [:orgpad.server/response cmd])))
                    :orgpad.server.reply/sender
                    (chsk-send! (:sender cmd) [:orgpad.server/response cmd])
                    nil)

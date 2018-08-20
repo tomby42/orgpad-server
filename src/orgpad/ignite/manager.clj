@@ -10,16 +10,18 @@
   (:gen-class))
 
 (defonce caches (atom {}))
+(defonce ignite-ref (atom nil))
 
 (defmethod ig/init-key ::setup
   [_ {:keys [logger config-file] :as params}]
   (let [ignite (Ignition/start config-file)]
     (.active ignite true)
     (logger/log logger :info ::setup.init-key config-file)
+    (reset! ignite-ref ignite)
     (merge params
            {:ignite ignite})))
 
-(defn- mk-cache
+(defn- mk-cache!
   [k {:keys [name config] :as params}]
   (let [cache-cfg (CacheConfiguration. name)
         _ (doto cache-cfg
@@ -33,15 +35,15 @@
 
 (defmethod ig/init-key ::global-orgpad-cache
   [k params]
-  (mk-cache k params))
+  (mk-cache! k params))
 
 (defmethod ig/init-key ::local-orgpad-cache
   [k params]
-  (mk-cache k params))
+  (mk-cache! k params))
 
 (defmethod ig/init-key ::history-cache
   [k params]
-  (mk-cache k params))
+  (mk-cache! k params))
 
 (defmethod ig/init-key ::caches
   [_ caches]
@@ -50,3 +52,9 @@
 (defn get-cache
   [key]
   (get @caches key))
+
+(defn get-tx!
+  []
+  (some-> @ignite-ref
+          .transactions
+          .txStart))
