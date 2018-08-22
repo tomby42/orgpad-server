@@ -78,7 +78,7 @@
     ;; (chsk-send! uid [])
     ))
 
-(def conjn (fnil conj #{}))
+(def ^:private conjn (fnil conj #{}))
 
 ;; Command structure
 ;;
@@ -95,9 +95,9 @@
   [{:as ev-msg :keys [event uid ?data ring-req ?reply-fn send-fn]}]
   (case (:action ?data)
     :orgpad.server/connect-to-orgpad
-    (update @orgpads->connections (get-in ?data [:params :orgpad.server/uuid]) conjn uid)
+    (swap! orgpads->connections update (get-in ?data [:params :orgpad.server/uuid]) conjn uid)
     :orgpad.server/disconnect-from-orgpad
-    (update @orgpads->connections (get-in ?data [:params :orgpad.server/uuid]) disj uid)
+    (swap! orgpads->connections update (get-in ?data [:params :orgpad.server/uuid]) disj uid)
     nil)
 
   (put! gates/default-input-channel (assoc ?data :sender uid)))
@@ -124,6 +124,7 @@
              (let [cmd (<! gates/default-output-buffer)]
                (println "*************************")
                (println "Result cmd: " cmd)
+               (println "orgpads->connections" @orgpads->connections)
                (println "*************************")
                (when cmd
                  (case (:reply cmd)

@@ -103,7 +103,7 @@
              :reply :orgpad.server.reply/orgpad-all
              :exclude #{(:sender cmd)}
              :result {:db (-> update-gdb dt/write-transit-str)})
-            (dissoc :params)))
+            (update :params select-keys [:orgpad.server/uuid])))
       (finally (.close tx)))))
 
 (defn do-cmd
