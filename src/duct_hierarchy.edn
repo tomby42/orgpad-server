@@ -1,2 +1,5 @@
 {:orgpad.module/ignite [:duct/module]
- :orgpad.module/onyx [:duct/module]}
+ :orgpad.module/onyx [:duct/module]
+ :orgpad.ignite.manager/setup [:duct/daemon]
+ :orgpad.onyx.manager/setup [:duct/daemon]
+ :orgpad.onyx.manager/submit-job [:duct/daemon]}

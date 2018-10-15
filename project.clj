@@ -2,6 +2,8 @@
 (cemerick.pomegranate.aether/register-wagon-factory!
  "http" #(org.apache.maven.wagon.providers.http.HttpWagon.))
 
+;; java -Xms512m -XX:+UseG1GC -cp target/orgpad-standalone.jar orgpad.main
+
 (defproject orgpad "0.1.0-SNAPSHOT"
   :description "Orgpad server"
   :url "http://orgpad.org"
@@ -63,10 +65,12 @@
                                    [kerodon "0.9.0"]]}
 
              :uberjar {:aot :all
+                       :main orgpad.main
                        :uberjar-name "orgpad-standalone.jar"
                        :global-vars {*assert* false}}}
 
   :source-paths ["src"]
   :java-source-paths ["src/java"]
+  
 
   :clean-targets ^{:protect false} ["target"])
