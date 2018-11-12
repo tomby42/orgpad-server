@@ -2,8 +2,6 @@
 (cemerick.pomegranate.aether/register-wagon-factory!
  "http" #(org.apache.maven.wagon.providers.http.HttpWagon.))
 
-;; java -Xms512m -XX:+UseG1GC -cp target/orgpad-standalone.jar orgpad.main
-
 (defproject orgpad "0.1.0-SNAPSHOT"
   :description "Orgpad server"
   :url "http://orgpad.org"
@@ -36,7 +34,7 @@
                  [org.apache.ignite/ignite-spring "2.5.2"]
 
                  [datascript "0.16.6"]
-                 [com.taoensso/sente "1.12.0"]
+                 [com.taoensso/sente "1.13.1"]
                  [com.cognitect/transit-clj "0.8.309"]
                  [datascript-transit "0.2.2"
                   :exclusions [com.cognitect/transit-clj

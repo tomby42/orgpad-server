@@ -43,6 +43,7 @@
 
 (defn split-global-local-update
   [ldb update-stream]
+  ;; (println "split-global-local-update" update-stream)
   (let [update-db (-> (d/empty-db {}) (d/with update-stream) :db-after)
         all-local-ids (->> update-db
                            (d/q '[:find [?v ...]
