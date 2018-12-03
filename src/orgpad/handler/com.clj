@@ -31,9 +31,11 @@
 
         chsk-server
         (sente/make-channel-socket-server!
-         (get-sch-adapter) {:packer packer
-                            :user-id-fn (fn [req] (or (get-in req [:session :uid])
-                                                      (str (java.util.UUID/randomUUID))))})
+         (get-sch-adapter {:max-frame-payload 1e6
+                           :max-frame-size 2e6}) ;; we need specially updated sente to support this
+         {:packer packer
+          :user-id-fn (fn [req] (or (get-in req [:session :uid])
+                                    (str (java.util.UUID/randomUUID))))})
 
         {:keys [connected-uids]} chsk-server]
 
